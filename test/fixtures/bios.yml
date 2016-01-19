@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyText
+  parish: MyText
+  entered_service: MyText
+  dates: MyText
+  filename: MyText
+
+two:
+  name: MyText
+  parish: MyText
+  entered_service: MyText
+  dates: MyText
+  filename: MyText
