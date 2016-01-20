@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 20160119004027) do
   end
 
   create_table "postings", force: :cascade do |t|
+    t.integer  "bio_id"
     t.text     "years"
     t.text     "position"
     t.text     "post"
@@ -32,5 +33,7 @@ ActiveRecord::Schema.define(version: 20160119004027) do
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
   end
+
+  add_index "postings", ["bio_id"], name: "index_postings_on_bio_id"
 
 end

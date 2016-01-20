@@ -1,8 +1,15 @@
 require 'test_helper'
+require 'parser'
 
-class ParserTest < Minitest::Test
+class Parser
+  def postings=(postings)
+    @postings = postings
+  end
+end
+
+class ParserTest < ActiveSupport::TestCase
   def setup
-    filename =  File.expand_path("../../fixtures/adams_edward-a.txt", __FILE__)
+    filename = File.expand_path('../../fixtures/adams_edward-a.txt', __FILE__)
     @parser = Parser.new(File.open(filename))
   end
 
@@ -13,7 +20,14 @@ class ParserTest < Minitest::Test
     assert_equal 'Dartmouth, Devon', @parser.bio.parish
     assert_equal '24 April  1869', @parser.bio.entered_service
     assert_equal '', @parser.bio.dates
-    assert_equal "Adams, Edward A (fl. 1869-1890) JHB/jhb  November 1990  ;  May/99/mhd;  revised pc May/00", @parser.bio.filename
+    assert_equal 'Adams, Edward A (fl. 1869-1890) JHB/jhb  November 1990  ;  May/99/mhd;  revised pc May/00', @parser.bio.filename
+  end
+
+  def test_save_bio
+    @parser.send(:parse_bio)
+    assert_difference 'Bio.count' do
+      @parser.send(:save_bio)
+    end
   end
 
   def test_header
@@ -22,10 +36,8 @@ class ParserTest < Minitest::Test
     assert_equal "Outfit Year*                  Position                               Post                            District                 HBCA Reference\n", header
   end
 
-  def test_parse_header
-    # header = "\nOutfit Year*            Position           Post                        District                                 HBCA Reference\n"
-    @parser.send(:parse_header)
-    header_indexes = @parser.header_indexes
+  def test_parse_postings_header
+    header_indexes =  @parser.send(:parse_postings_header)
 
     assert_equal 0, header_indexes['outfit_years']
     assert_equal 30, header_indexes['positions']
@@ -34,16 +46,16 @@ class ParserTest < Minitest::Test
     assert_equal 126, header_indexes['hbca_references']
   end
 
-  def test_parse_records
-    header = @parser.send(:retrieve_header)
-    @parser.send(:parse_header)
+  def test_parse_postings
+    @parser.send(:retrieve_header)
+    @parser.send(:parse_postings_header)
 
-    postings = @parser.send(:parse_records)
+    postings = @parser.send(:parse_postings)
 
     assert_equal 9, postings.size
 
     assert_equal '1869, 29 May', postings[0].years
-    # overvlow -- 'rador' goes in next field
+    # overflow -- 'rador' goes in next field
     assert_equal 'Entered on board ship travelling to Lab', postings[0].position
     assert_equal 'rador', postings[0].post
     assert_equal '', postings[0].district
@@ -56,5 +68,13 @@ class ParserTest < Minitest::Test
     assert_equal 'B.134/g/51; A.32/20 fo.4', postings[4].hbca_reference
 
     assert_equal '1880 (season)', postings[5].years
+  end
+
+  def test_save_postings
+    @parser.postings = [Posting.new, Posting.new]
+
+    assert_difference 'Posting.count', 2 do
+      @parser.send(:save_postings)
+    end
   end
 end
