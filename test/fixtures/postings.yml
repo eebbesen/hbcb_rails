@@ -1,15 +1,17 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  years: MyText
-  position: MyText
-  post: MyText
-  district: MyText
-  hbca_reference: MyText
+  years: 1869-1872
+  position: Postmaster
+  post: Rigolet
+  district: Esquimaux Bay
+  hbca_reference: A.32/20 fo. 1-2; B.153/g/5-6
+  bio: bio_one
 
 two:
-  years: MyText
-  position: MyText
-  post: MyText
-  district: MyText
-  hbca_reference: MyText
+  years: 1878-1879
+  position: Clerk
+  post: North West River
+  district: Esquimaux Bay
+  hbca_reference: B.134/g/51; A.32/20 fo.4
+  bio: bio_one

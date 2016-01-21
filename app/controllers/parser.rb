@@ -1,5 +1,7 @@
+##
+# Parse a biography sheet into Bio and Postings
 class Parser
-  attr_reader :header_indexes, :bio
+  attr_reader :bio, :postings
 
   def initialize(file)
     @file = file
@@ -8,9 +10,8 @@ class Parser
   def parse
     parse_bio
     save_bio
-    parse_header
-    parse_records
-    save_records
+    parse_postings
+    save_postings
   end
 
   private
@@ -34,32 +35,9 @@ class Parser
     @bio.filename = text.match(FILENAME)[1].strip
   end
 
-  def save_bio
-    @bio.save!
-  end
-
-  def parse_header
-    header = retrieve_header
-    @header_indexes = { 
-      'outfit_years' => 0,
-      'positions' => header.index('Position'),
-      'posts' => header.index('Post'),
-      'districts' => header.index('District'),
-      'hbca_references' => header.index('HBCA Reference')
-    }
-  end
-
-  def retrieve_header
-    @file.each do |line|
-      if line.match(/^Outfit Year*/)
-        @file.rewind
-        return line 
-      end
-    end
-  end
-
-  def parse_records
-    postings = []
+  def parse_postings
+    header_indexes = parse_postings_header
+    @postings = []
     oy_found = false
     @file.each do |line|
       if line.index('Outfit Year') == 0
@@ -69,14 +47,46 @@ class Parser
       next unless oy_found
       if line.match(/^[0-9].*/)
         posting = Posting.new
-        posting.years = line[0, @header_indexes['positions']].strip
-        posting.position = line[@header_indexes['positions'], @header_indexes['posts'] - @header_indexes['positions']].strip
-        posting.post = line[@header_indexes['posts'], @header_indexes['districts'] - @header_indexes['posts']].strip
-        posting.district = line[@header_indexes['districts'], @header_indexes['hbca_references'] - @header_indexes['districts']].strip
-        posting.hbca_reference = line[@header_indexes['hbca_references'], line.length].strip
-        postings << posting
+        posting.years = line[0, header_indexes['positions']].strip
+        posting.position = line[header_indexes['positions'], header_indexes['posts'] - header_indexes['positions']].strip
+        posting.post = line[header_indexes['posts'], header_indexes['districts'] - header_indexes['posts']].strip
+        posting.district = line[header_indexes['districts'], header_indexes['hbca_references'] - header_indexes['districts']].strip
+        posting.hbca_reference = line[header_indexes['hbca_references'], line.length].strip
+        @postings << posting
       end
     end
-    postings
+    @postings
   end
+
+  def save_bio
+    @bio.save!
+  end
+
+  def save_postings
+    @postings.each do |posting| 
+      posting.save!
+    end
+  end
+
+  def parse_postings_header
+    header = retrieve_header
+    {
+      'outfit_years' => 0,
+      'positions' => header.index('Position'),
+      'posts' => header.index('Post'),
+      'districts' => header.index('District'),
+      'hbca_references' => header.index('HBCA Reference')
+    }
+  end
+
+  def retrieve_header
+    @file.rewind
+    @file.each do |line|
+      if line.match(/^Outfit Year*/)
+        @file.rewind
+        return line
+      end
+    end
+  end
+
 end
