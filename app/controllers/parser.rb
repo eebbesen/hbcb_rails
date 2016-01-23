@@ -19,13 +19,14 @@ class Parser
 
   private
 
-  NAME = /NAME:(.*)PARISH/
-  PARISH = /PARISH:(.*?)ENTERED/
-  ENTERED_SERVICE = /ENTERED\s+SERVICE:(.*)DATES/
-  ARCHIVES = /ARCHIVES(.*)Filename/
-  DATES = /DATES:(.*)/
-  FILENAME = /Filename:(.*)/
-  HEADERS = /Outfit Year.*/
+  NAME = /(?:NAME|Ne AME|^AME):?(.*?)(PARISH|PLACE\s+OF|BIRTHPLACE|RESIDENCE)/im
+  PARISH = /(?:PARISH|RESIDENCE):(.*?)(?:ENTERED\s+SERVICE|SERVICE)/i
+  PLACE_OF_BIRTH = /(?:PLACE\s+OF\s+BIRTH|BIRTHPLACE):(.*?)ENTERED/i
+  ENTERED_SERVICE = /(?:ENTERED\s+SERVICE|SERVICE):(.*)DATES/i
+  ARCHIVES = /ARCHIVES(.*)Filename/i
+  DATES = /DATES:(.*)/i
+  FILENAME = /Filename:(.*)/i
+  HEADERS = /Outfit Year.*/i
 
   def parse_bio
     text = @lines.join("\n")
@@ -33,6 +34,7 @@ class Parser
     @bio = Bio.new
     @bio.name = safe_match text, NAME
     @bio.parish = safe_match text, PARISH
+    @bio.place_of_birth = safe_match text, PLACE_OF_BIRTH
     @bio.entered_service = safe_match text, ENTERED_SERVICE
     @bio.dates = safe_match text, DATES
     @bio.filename = safe_match text, FILENAME

@@ -18,9 +18,151 @@ class ParserTest < ActiveSupport::TestCase
 
     assert_equal 'ADAMS, Edward (A)', @parser.bio.name
     assert_equal 'Dartmouth, Devon', @parser.bio.parish
+    assert_equal '', @parser.bio.place_of_birth
     assert_equal '24 April  1869', @parser.bio.entered_service
     assert_equal '', @parser.bio.dates
     assert_equal 'Adams, Edward A (fl. 1869-1890) JHB/jhb  November 1990  ;  May/99/mhd;  revised pc May/00', @parser.bio.filename
+  end
+
+  def test_parse_bio_with_place_of_birth
+    filename = File.expand_path('../../fixtures/adan_charles.txt', __FILE__)
+    @parser = Parser.new(filename)
+
+    @parser.send(:parse_bio)
+
+    assert_equal 'ADAN, CHARLES', @parser.bio.name
+    assert_equal 'Old Machar, Aberdeen', @parser.bio.place_of_birth
+    assert_equal '', @parser.bio.parish
+    assert_equal '3 Aug. 1922', @parser.bio.entered_service
+    assert_equal '24 July 1901-', @parser.bio.dates
+    assert_equal 'Adan, Charles (1901-) (fl. 1922-1938); AM 00/03; rev. 2002/10', @parser.bio.filename
+  end
+
+  def test_parse_bio_with_birthplace
+    filename = File.expand_path('../../fixtures/desmeules_leo-joseph.txt', __FILE__)
+    @parser = Parser.new(filename)
+
+    @parser.send(:parse_bio)
+
+    assert_equal 'DESMEULES, Leo Joseph', @parser.bio.name
+    assert_equal 'Big River, SK', @parser.bio.place_of_birth
+    assert_equal '', @parser.bio.parish
+    assert_equal 'April, 1936', @parser.bio.entered_service
+    assert_equal '19  Sept.  1919  -', @parser.bio.dates
+    assert_equal 'Desmeules, Leo Joseph (fl. 1936-1937) ; AM/Dec. 1995 ; June/99/mhd', @parser.bio.filename
+  end
+
+  def test_parse_bio_without_colons
+    filename = File.expand_path('../../fixtures/albert[albert_one-eye).txt', __FILE__)
+    @parser = Parser.new(filename)
+
+    @parser.send(:parse_bio)
+
+    assert_equal 'ALBERT', @parser.bio.name
+    assert_equal '', @parser.bio.place_of_birth
+    assert_equal '', @parser.bio.parish
+    assert_equal '', @parser.bio.entered_service
+    assert_equal 'b.ca. 1824', @parser.bio.dates
+    assert_equal 'Albert [Albert One-Eye] (b.ca.1824-1849)  Copied from binder copy PC June/01', @parser.bio.filename
+  end
+
+  def test_parse_bio_with_lower_case
+    filename = File.expand_path('../../fixtures/black_edward_alexander1907.txt', __FILE__)
+    @parser = Parser.new(filename)
+
+    @parser.send(:parse_bio)
+
+    assert_equal 'BLACK, Edward Alexander', @parser.bio.name
+    assert_equal 'Turiff, Scotland', @parser.bio.place_of_birth
+    assert_equal '', @parser.bio.parish
+    assert_equal '7  May  1926', @parser.bio.entered_service
+    assert_equal 'b.1907', @parser.bio.dates
+    assert_equal 'Black, Edward Alexander (1907-) (1926-1934); TS 01/2011', @parser.bio.filename
+  end
+
+  def test_parse_bio_with_multiple_matches
+    filename = File.expand_path('../../fixtures/allen_nicholas(1768).txt', __FILE__)
+    @parser = Parser.new(filename)
+
+    @parser.send(:parse_bio)
+
+    assert_equal 'ALLEN, Nicholas', @parser.bio.name
+    assert_equal '', @parser.bio.place_of_birth
+    assert_equal 'South Ronaldsha,       North  Parish', @parser.bio.parish
+    assert_equal '29 June 1790', @parser.bio.entered_service
+    assert_equal 'b. ca. 1768', @parser.bio.dates
+    assert_equal 'Allen, Nicholas (b. ca. 1768) (fl. 1790-1795)  JHB 1999/01  Revised pc May/00', @parser.bio.filename
+  end
+
+  def test_parse_bio_with_misformed_bio_line_newline
+    filename = File.expand_path('../../fixtures/bonneau_jean-baptiste.txt', __FILE__)
+    @parser = Parser.new(filename)
+
+    @parser.send(:parse_bio)
+
+    assert_equal 'BONNEAU, Jean-Baptiste', @parser.bio.name
+    assert_equal '', @parser.bio.place_of_birth
+    assert_equal 'CA', @parser.bio.parish
+    assert_equal '1811-1821', @parser.bio.entered_service
+    assert_equal '', @parser.bio.dates
+    assert_equal 'Bonneau, Jean-Baptiste (fl. 1811-1821) CO 2002 August', @parser.bio.filename
+  end
+
+  def test_parse_bio_with_misformed_bio_line_newline_splitting_data
+    filename = File.expand_path('../../fixtures/boucher_james.txt', __FILE__)
+    @parser = Parser.new(filename)
+
+    @parser.send(:parse_bio)
+
+    assert_equal "BOUCHER, James\n\n\n\n              (Bouché)", @parser.bio.name
+    assert_equal '', @parser.bio.place_of_birth
+    assert_equal 'Native', @parser.bio.parish
+    assert_equal '(fl. 1841-1844)', @parser.bio.entered_service
+    assert_equal '', @parser.bio.dates
+    assert_equal 'Boucher, James (Bouché) (fl.1841-1844) CO 2002 August         WINNIPEG', @parser.bio.filename
+  end
+
+  # Consider preprocessing this out -- only happens twice in data set
+  def test_parse_bio_with_misformed_bio_line_ne_ame
+    filename = File.expand_path('../../fixtures/brabant_angus.txt', __FILE__)
+    @parser = Parser.new(filename)
+
+    @parser.send(:parse_bio)
+
+    assert_equal 'BRABANT, Angus', @parser.bio.name
+    assert_equal '', @parser.bio.place_of_birth
+    assert_equal '', @parser.bio.parish
+    assert_equal '(fl. 1886-1927)', @parser.bio.entered_service
+    assert_equal '(b. May 31, 1866', @parser.bio.dates
+    assert_equal 'Brabant, Angus (b.1866-1928) (fl. 1920) CO 2002 August', @parser.bio.filename
+  end
+
+  def test_parse_bio_with_misformed_bio_line_ame
+    filename = File.expand_path('../../fixtures/henderson_donald.txt', __FILE__)
+    @parser = Parser.new(filename)
+
+    @parser.send(:parse_bio)
+
+    assert_equal 'HENDERSON, Donald', @parser.bio.name
+    assert_equal '', @parser.bio.place_of_birth
+    assert_equal 'Brawl, Halkirk Parish', @parser.bio.parish
+    assert_equal '1829, 1 June', @parser.bio.entered_service
+    assert_equal 'b. ca. 1811', @parser.bio.dates
+    assert_equal 'Henderson, Donald (ca. 1811-1859) (fl. 1829-1859); JHB/ek March l987', @parser.bio.filename
+  end
+
+  def test_parse_bio_with_residence
+    filename = File.expand_path('../../fixtures/good_hubert.txt', __FILE__)
+    @parser = Parser.new(filename)
+
+    @parser.send(:parse_bio)
+
+    assert_equal 'GOOD, Hubert Ernst P.', @parser.bio.name
+    assert_equal '', @parser.bio.place_of_birth
+    assert_equal 'Nanaimo, BC', @parser.bio.parish
+    assert_equal '1 June     1893', @parser.bio.entered_service
+    assert_equal '', @parser.bio.dates
+    assert_equal 'Good,  Hubert  Ernst  P.  (bapt. 1875) (fl. 1893-1896); JHB/jhb Feb. 1991', @parser.bio.filename
   end
 
   def test_save_bio
@@ -30,7 +172,7 @@ class ParserTest < ActiveSupport::TestCase
     end
   end
 
-  def test_header_with
+  def test_header
     header = @parser.send(:retrieve_header)
 
     assert_equal "Outfit Year*                  Position                               Post                            District                 HBCA Reference\n", header
@@ -131,4 +273,5 @@ class ParserTest < ActiveSupport::TestCase
     assert_equal '6AM', @parser.send(:safe_match, line, /(6AM )/)
     assert_equal '', @parser.send(:safe_match, line, /Hopalong/)
   end
+
 end

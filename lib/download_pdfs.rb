@@ -15,8 +15,12 @@ def download_pdf(letter, file_uri)
 
   begin
     puts "getting #{full_uri}"
-    download = open("#{full_uri}") unless ENV['DRY_RUN']
-    IO.copy_stream(download, "./downloads/#{file_uri}") unless ENV['DRY_RUN']
+    if ENV['DRY_RUN']
+      puts 'DRY RUN -- nothing will be downloaded'
+    else
+      download = open("#{full_uri}")
+      IO.copy_stream(download, "./downloads/#{file_uri}")
+    end
   rescue URI::InvalidURIError => uri_error
     puts uri_error
     puts "ERROR: didn't download #{full_uri}"
