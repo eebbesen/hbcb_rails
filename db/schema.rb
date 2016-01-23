@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160119004027) do
+ActiveRecord::Schema.define(version: 20160123015252) do
 
   create_table "bios", force: :cascade do |t|
     t.text     "name"
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 20160119004027) do
     t.text     "hbca_reference"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
+    t.string   "ship"
   end
 
   add_index "postings", ["bio_id"], name: "index_postings_on_bio_id"

@@ -3,8 +3,11 @@
 class Parser
   attr_reader :bio, :postings
 
-  def initialize(file)
-    @file = file
+  def initialize(filename)
+    @lines = []
+    File.open(filename, :encoding => 'iso-8859-1').each do |line|
+      @lines << line
+    end
   end
 
   def parse
@@ -25,45 +28,62 @@ class Parser
   HEADERS = /Outfit Year.*/
 
   def parse_bio
-    text = @file.read
+    text = @lines.join("\n")
 
     @bio = Bio.new
-    @bio.name = text.match(NAME)[1].strip
-    @bio.parish = text.match(PARISH)[1].strip
-    @bio.entered_service = text.match(ENTERED_SERVICE)[1].strip
-    @bio.dates = text.match(DATES)[1].strip
-    @bio.filename = text.match(FILENAME)[1].strip
+    @bio.name = safe_match text, NAME
+    @bio.parish = safe_match text, PARISH
+    @bio.entered_service = safe_match text, ENTERED_SERVICE
+    @bio.dates = safe_match text, DATES
+    @bio.filename = safe_match text, FILENAME
+  end
+
+  def safe_match(line, regex)
+    value = line.match(regex)
+    return value[1].strip if (value && value[1])
+    ''
   end
 
   def parse_postings
     header_indexes = parse_postings_header
     @postings = []
     oy_found = false
-    @file.each do |line|
+    @lines.each do |line|
       if line.index('Outfit Year') == 0
         oy_found = true
         next
       end
       next unless oy_found
       if line.match(/^[0-9].*/)
+        Rails.logger.debug line
         posting = Posting.new
-        posting.years = line[0, header_indexes['positions']].strip
-        posting.position = line[header_indexes['positions'], header_indexes['posts'] - header_indexes['positions']].strip
-        posting.post = line[header_indexes['posts'], header_indexes['districts'] - header_indexes['posts']].strip
-        posting.district = line[header_indexes['districts'], header_indexes['hbca_references'] - header_indexes['districts']].strip
-        posting.hbca_reference = line[header_indexes['hbca_references'], line.length].strip
+        posting.years = safe_extract_value line, 0, header_indexes['positions']
+        post_ship_index = header_indexes['posts'] || header_indexes['ships']
+        posting.position = safe_extract_value line, header_indexes['positions'], post_ship_index
+        posting.post = safe_extract_value line, post_ship_index, header_indexes['districts']
+        posting.district = safe_extract_value line, header_indexes['districts'], header_indexes['hbca_references']
+        posting.hbca_reference = safe_extract_value line, header_indexes['hbca_references'], line.length
         @postings << posting
       end
     end
     @postings
   end
 
+  def safe_extract_value(line, start, next_start)
+    return '' if [line, start, next_start].include? nil
+    value = line[start, next_start - start]
+    return value.strip if value
+    ''
+  end
+
   def save_bio
+    Rails.logger.debug(@bio)
     @bio.save!
   end
 
   def save_postings
     @postings.each do |posting| 
+      Rails.logger.debug(posting)
       posting.save!
     end
   end
@@ -74,16 +94,16 @@ class Parser
       'outfit_years' => 0,
       'positions' => header.index('Position'),
       'posts' => header.index('Post'),
+      'ships' => header.index('Ship'),
       'districts' => header.index('District'),
       'hbca_references' => header.index('HBCA Reference')
     }
   end
 
   def retrieve_header
-    @file.rewind
-    @file.each do |line|
+    @lines.each do |line|
       if line.match(/^Outfit Year*/)
-        @file.rewind
+        Rails.logger.debug line
         return line
       end
     end

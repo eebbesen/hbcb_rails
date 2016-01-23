@@ -10,7 +10,7 @@ The final product will be data files/CSV/etc. that can be used as a more traditi
 ### Download pdfs
 
     gem install nokogiri
-    ruby lib/download.rb [start_letter]
+    ruby lib/download_pdfs.rb [start_letter]
 
 You can include a `start_letter` if you've already partially downloaded the files.
 

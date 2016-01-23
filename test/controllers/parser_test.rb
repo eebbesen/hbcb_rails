@@ -10,7 +10,7 @@ end
 class ParserTest < ActiveSupport::TestCase
   def setup
     filename = File.expand_path('../../fixtures/adams_edward-a.txt', __FILE__)
-    @parser = Parser.new(File.open(filename))
+    @parser = Parser.new(filename)
   end
 
   def test_parse_bio
@@ -30,13 +30,13 @@ class ParserTest < ActiveSupport::TestCase
     end
   end
 
-  def test_header
+  def test_header_with
     header = @parser.send(:retrieve_header)
 
     assert_equal "Outfit Year*                  Position                               Post                            District                 HBCA Reference\n", header
   end
 
-  def test_parse_postings_header
+  def test_parse_postings_header_with_post
     header_indexes =  @parser.send(:parse_postings_header)
 
     assert_equal 0, header_indexes['outfit_years']
@@ -44,7 +44,23 @@ class ParserTest < ActiveSupport::TestCase
     assert_equal 69, header_indexes['posts']
     assert_equal 101, header_indexes['districts']
     assert_equal 126, header_indexes['hbca_references']
+    assert_nil header_indexes['ships']
   end
+
+  def test_parse_postings_header_with_ship
+    filename = File.expand_path('../../fixtures/adams_james.txt', __FILE__)
+    @parser = Parser.new(filename)
+
+    header_indexes =  @parser.send(:parse_postings_header)
+
+    assert_equal 0, header_indexes['outfit_years']
+    assert_equal 44, header_indexes['positions']
+    assert_equal 71, header_indexes['ships']
+    assert_equal 117, header_indexes['districts']
+    assert_equal 142, header_indexes['hbca_references']
+    assert_nil header_indexes['posts']
+  end
+
 
   def test_parse_postings
     @parser.send(:retrieve_header)
@@ -70,11 +86,49 @@ class ParserTest < ActiveSupport::TestCase
     assert_equal '1880 (season)', postings[5].years
   end
 
+  def test_parse_postings_ship
+    filename = File.expand_path('../../fixtures/adams_james.txt', __FILE__)
+    @parser = Parser.new(filename)
+
+    postings = @parser.send(:parse_postings)
+
+    assert_equal 3, postings.size
+
+    assert_equal '1840, 20 Aug.-1841, 1 Apr.', postings[0].years
+    assert_equal 'Seaman', postings[0].position
+    assert_nil postings[0].ship
+    assert_equal 'London-Columbia', postings[0].district
+    assert_equal 'C.3/14 fo. 100', postings[0].hbca_reference
+
+    assert_equal '1841, 1 April', postings[1].years
+    assert_equal 'Drowned at Fort Vancouver', postings[1].position
+    assert_nil postings[1].ship
+    assert_equal '', postings[1].district
+    assert_equal 'C.1/257 fo. 94d', postings[1].hbca_reference
+  end
+
   def test_save_postings
     @parser.postings = [Posting.new, Posting.new]
 
     assert_difference 'Posting.count', 2 do
       @parser.send(:save_postings)
     end
+  end
+
+  def test_safe_extract_value
+    line = 'The waitress jumped over the table and begged, "Can I take your picture?"'
+
+    assert_equal 'waitress', @parser.send(:safe_extract_value, line, 3, 13)
+    assert_equal 'waitress j', @parser.send(:safe_extract_value, line, 3, 14)
+    assert_equal '', @parser.send(:safe_extract_value, line, 100, 101)
+    assert_equal '', @parser.send(:safe_extract_value, line, nil, nil)
+    assert_equal '', @parser.send(:safe_extract_value, nil, nil, nil)
+  end
+
+  def test_safe_match
+    line = 'Pennsylvania, the 6AM cold sun leaves me waiting on the thread of someone'
+
+    assert_equal '6AM', @parser.send(:safe_match, line, /(6AM )/)
+    assert_equal '', @parser.send(:safe_match, line, /Hopalong/)
   end
 end
