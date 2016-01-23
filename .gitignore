@@ -16,3 +16,4 @@
 !/log/.keep
 /tmp
 .ruby-*
+test/reports
