@@ -165,6 +165,34 @@ class ParserTest < ActiveSupport::TestCase
     assert_equal 'Good,  Hubert  Ernst  P.  (bapt. 1875) (fl. 1893-1896); JHB/jhb Feb. 1991', @parser.bio.filename
   end
 
+  def test_parse_bio_with_address
+    filename = File.expand_path('../../fixtures/wheeler_roy-thomas.txt', __FILE__)
+    @parser = Parser.new(filename)
+
+    @parser.send(:parse_bio)
+
+    assert_equal 'WHEELER, ROY THOMAS', @parser.bio.name
+    assert_equal '', @parser.bio.place_of_birth
+    assert_equal '12 Kemble Road', @parser.bio.parish
+    assert_equal '8 May 1928', @parser.bio.entered_service
+    assert_equal 'b. ca. 1910', @parser.bio.dates
+    assert_equal 'Wheeler, Roy Thomas (b. ca. 1910) (fl. 1928-1933) JHB 10/95', @parser.bio.filename
+  end
+
+  def test_parse_bio_with_nationality
+    filename = File.expand_path('../../fixtures/phillips_william-george.txt', __FILE__)
+    @parser = Parser.new(filename)
+
+    @parser.send(:parse_bio)
+
+    assert_equal 'PHILLIPS, William George', @parser.bio.name
+    assert_equal 'Irish', @parser.bio.place_of_birth
+    assert_equal '', @parser.bio.parish
+    assert_equal '1909, 1 June', @parser.bio.entered_service
+    assert_equal 'b. 23 Sept. l882', @parser.bio.dates
+    assert_equal 'Phillips, William George (b. 1882) (fl. 1909-1927)  JHB/ek   November l987', @parser.bio.filename
+  end
+
   def test_save_bio
     @parser.send(:parse_bio)
     assert_difference 'Bio.count' do
