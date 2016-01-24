@@ -27,12 +27,14 @@ class Parser
   DATES = /DATES:(.*)/i
   FILENAME = /Filename:(.*)/i
   HEADERS = /Outfit Year.*/i
+  SUFFIX = /\s*([sj]r)\.?$/i
 
   def parse_bio
     text = @lines.join("\n")
 
     @bio = Bio.new
     @bio.name = safe_match text, NAME
+    @bio.first_name, @bio.middle_name, @bio.last_name = parse_name(@bio.name)
     @bio.parish = safe_match text, PARISH
     @bio.place_of_birth = safe_match text, PLACE_OF_BIRTH
     @bio.entered_service = safe_match text, ENTERED_SERVICE
@@ -40,9 +42,24 @@ class Parser
     @bio.filename = safe_match text, FILENAME
   end
 
+  def parse_name(name)
+    full_name = name.downcase.gsub(/[()"\'\.,]/, ' ').gsub(/\s+/, ' ').split(/\s/m)
+    suffix = safe_match(full_name.last, SUFFIX)
+    full_name.pop if !suffix.blank?
+    full_name = full_name.join(' ').strip.split(' ')
+    last = full_name.shift
+    first = full_name.shift
+    middle = full_name.join ' '
+    [[first, suffix].join(' '), middle, last].map do |x|
+      x = x.strip if x
+    end
+  end
+
   def safe_match(line, regex)
-    value = line.match(regex)
-    return value[1].strip if (value && value[1])
+    unless line.blank?
+      value = line.match(regex)
+      return value[1].strip if (value && value[1])
+    end
     ''
   end
 
