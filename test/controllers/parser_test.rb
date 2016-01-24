@@ -17,6 +17,9 @@ class ParserTest < ActiveSupport::TestCase
     @parser.send(:parse_bio)
 
     assert_equal 'ADAMS, Edward (A)', @parser.bio.name
+    assert_equal 'edward', @parser.bio.first_name
+    assert_equal 'a', @parser.bio.middle_name
+    assert_equal 'adams', @parser.bio.last_name
     assert_equal 'Dartmouth, Devon', @parser.bio.parish
     assert_equal '', @parser.bio.place_of_birth
     assert_equal '24 April  1869', @parser.bio.entered_service
@@ -193,6 +196,13 @@ class ParserTest < ActiveSupport::TestCase
     assert_equal 'Phillips, William George (b. 1882) (fl. 1909-1927)  JHB/ek   November l987', @parser.bio.filename
   end
 
+  def test_parse_name
+    assert_equal ['joseph sr', '', 'hovington'], @parser.send(:parse_name, 'HOVINGTON, JOSEPH,    Sr.')
+    assert_equal ['william sr', '', 'paulson'], @parser.send(:parse_name, 'Paulson, William Sr.')
+    assert_equal ['frank sr', 'charles', 'johnson'], @parser.send(:parse_name, 'johnson, frank charles sr')
+    assert_equal ['frank jr', 'charles', 'johnson'], @parser.send(:parse_name, 'johnson, frank charles, jr.')
+  end
+
   def test_save_bio
     @parser.send(:parse_bio)
     assert_difference 'Bio.count' do
@@ -300,6 +310,12 @@ class ParserTest < ActiveSupport::TestCase
 
     assert_equal '6AM', @parser.send(:safe_match, line, /(6AM )/)
     assert_equal '', @parser.send(:safe_match, line, /Hopalong/)
+  end
+
+  def test_safe_match_nil_input
+    assert_equal '', @parser.send(:safe_match, nil, /Hopalong/)
+    assert_equal '', @parser.send(:safe_match, '', /Hopalong/)
+    assert_equal '', @parser.send(:safe_match, ' ', /Hopalong/)
   end
 
 end
