@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class BioTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+  test 'should return formatted name' do
+    assert 'Edward A Adams', bios(:one).formatted_name
+  end
 end

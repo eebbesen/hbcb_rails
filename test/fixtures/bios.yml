@@ -2,6 +2,9 @@
 
 one:
   name: 'ADAMS, Edward (A)'
+  first_name: edward
+  middle_name: a
+  last_name: adams
   parish: 'Dartmouth, Devon'
   entered_service: '24 April 1869'
   dates: 
@@ -9,6 +12,9 @@ one:
 
 two:
   name: MyText
+  first_name: MyText
+  middle_name: MyText
+  last_name: MyText
   parish: MyText
   entered_service: MyText
   dates: MyText

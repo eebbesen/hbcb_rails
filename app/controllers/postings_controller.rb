@@ -4,7 +4,8 @@ class PostingsController < ApplicationController
   # GET /postings
   # GET /postings.json
   def index
-    @bio = Bio.find(params[:bio_id])
+    @bio = Bio.find(params[:bio_id]) if params[:bio_id]
+    @title = title
     @postings = @bio ? Posting.where(bio_id: @bio.id) : Posting.all
   end
 
@@ -60,6 +61,11 @@ class PostingsController < ApplicationController
       format.html { redirect_to postings_url, notice: 'Posting was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+
+  def title
+    @bio.formatted_name if @bio
+    'Postings'
   end
 
   private
