@@ -8,7 +8,6 @@
       <th>First name</th>
       <th>Middle name</th>
       <th>Last name</th>
-      <th>Name</th>
       <th>Parish</th>
       <th>Entered service</th>
       <th>Dates</th>
@@ -20,17 +19,15 @@
   <tbody>
     <% @bios.each do |bio| %>
       <tr>
-        <td><%= bio.first_name %></td>
-        <td><%= bio.middle_name %></td>
+        <td><%= link_to bio.first_name, postings_path({bio_id: bio.id}) %></td>
+        <td width="30"><%= bio.middle_name %></td>
         <td><%= bio.last_name %></td>
-        <td><%= bio.name %></td>
         <td><%= bio.parish %></td>
         <td><%= bio.entered_service %></td>
         <td><%= bio.dates %></td>
         <td><%= bio.place_of_birth %></td>
         <td><%= link_to 'Show', bio %></td>
         <td><%= link_to 'Edit', edit_bio_path(bio) %></td>
-        <td><%= link_to 'Destroy', bio, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>

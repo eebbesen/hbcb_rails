@@ -4,7 +4,7 @@ class PostingsController < ApplicationController
   # GET /postings
   # GET /postings.json
   def index
-    @postings = Posting.all
+    @postings = params[:bio_id] ? Posting.where(bio_id: params[:bio_id]) : Posting.all
   end
 
   # GET /postings/1

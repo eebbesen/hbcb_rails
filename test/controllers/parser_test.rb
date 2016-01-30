@@ -5,6 +5,10 @@ class Parser
   def postings=(postings)
     @postings = postings
   end
+
+  def bio=(bio)
+    @bio = bio
+  end
 end
 
 class ParserTest < ActiveSupport::TestCase
@@ -243,6 +247,7 @@ class ParserTest < ActiveSupport::TestCase
 
 
   def test_parse_postings
+    @parser.bio = postings(:one)
     @parser.send(:retrieve_header)
     @parser.send(:parse_postings_header)
 
@@ -256,6 +261,7 @@ class ParserTest < ActiveSupport::TestCase
     assert_equal 'rador', postings[0].post
     assert_equal '', postings[0].district
     assert_equal 'A.32/20 fo. 1-2', postings[0].hbca_reference
+    assert_not_nil postings[0].bio_id
 
     assert_equal '1878-1879', postings[4].years
     assert_equal 'Clerk', postings[4].position
@@ -269,6 +275,7 @@ class ParserTest < ActiveSupport::TestCase
   def test_parse_postings_ship
     filename = File.expand_path('../../fixtures/adams_james.txt', __FILE__)
     @parser = Parser.new(filename)
+    @parser.bio = postings(:one)
 
     postings = @parser.send(:parse_postings)
 

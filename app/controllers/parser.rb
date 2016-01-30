@@ -76,6 +76,7 @@ class Parser
       if line.match(/^[0-9].*/)
         Rails.logger.debug line
         posting = Posting.new
+        posting.bio_id = @bio.id
         posting.years = safe_extract_value line, 0, header_indexes['positions']
         post_ship_index = header_indexes['posts'] || header_indexes['ships']
         posting.position = safe_extract_value line, header_indexes['positions'], post_ship_index
