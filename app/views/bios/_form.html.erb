@@ -1,0 +1,49 @@
+<%= form_for(@bio) do |f| %>
+  <% if @bio.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@bio.errors.count, "error") %> prohibited this bio from being saved:</h2>
+
+      <ul>
+      <% @bio.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :first_name %><br>
+    <%= f.text_field :first_name %>
+  </div>
+  <div class="field">
+    <%= f.label :middle_name %><br>
+    <%= f.text_field :middle_name %>
+  </div>
+  <div class="field">
+    <%= f.label :last_name %><br>
+    <%= f.text_field :last_name %>
+  </div>
+  <div class="field">
+    <%= f.label :name %><br>
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :parish %><br>
+    <%= f.text_field :parish %>
+  </div>
+  <div class="field">
+    <%= f.label :entered_service %><br>
+    <%= f.text_field :entered_service %>
+  </div>
+  <div class="field">
+    <%= f.label :dates %><br>
+    <%= f.text_field :dates %>
+  </div>
+  <div class="field">
+    <%= f.label :place_of_birth %><br>
+    <%= f.text_field :place_of_birth %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

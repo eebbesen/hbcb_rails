@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<h1><%= @title %></h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Years</th>
+      <th>Position</th>
+      <th>Post</th>
+      <th>District</th>
+      <th>Ship</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @postings.each do |posting| %>
+      <tr>
+        <td><%= posting.years %></td>
+        <td><%= posting.position %></td>
+        <td><%= posting.post %></td>
+        <td><%= posting.district %></td>
+        <td><%= posting.ship %></td>
+        <td><%= link_to 'Show', posting %></td>
+        <td><%= link_to 'Edit', edit_posting_path(posting) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Posting', new_posting_path %>

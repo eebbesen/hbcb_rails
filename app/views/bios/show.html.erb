@@ -1,0 +1,44 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>First name:</strong>
+  <%= @bio.first_name %>
+</p>
+
+<p>
+  <strong>Middle name:</strong>
+  <%= @bio.middle_name %>
+</p>
+
+<p>
+  <strong>Last name:</strong>
+  <%= @bio.last_name %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @bio.name %>
+</p>
+
+<p>
+  <strong>Parish:</strong>
+  <%= @bio.parish %>
+</p>
+
+<p>
+  <strong>Entered service:</strong>
+  <%= @bio.entered_service %>
+</p>
+
+<p>
+  <strong>Dates:</strong>
+  <%= @bio.dates %>
+</p>
+
+<p>
+  <strong>Place of birth:</strong>
+  <%= @bio.place_of_birth %>
+</p>
+
+<%= link_to 'Edit', edit_bio_path(@bio) %> |
+<%= link_to 'Back', bios_path %>

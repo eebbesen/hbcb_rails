@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Years:</strong>
+  <%= @posting.years %>
+</p>
+
+<p>
+  <strong>Position:</strong>
+  <%= @posting.position %>
+</p>
+
+<p>
+  <strong>Post:</strong>
+  <%= @posting.post %>
+</p>
+
+<p>
+  <strong>District:</strong>
+  <%= @posting.district %>
+</p>
+
+<p>
+  <strong>Ship:</strong>
+  <%= @posting.ship %>
+</p>
+
+<%= link_to 'Edit', edit_posting_path(@posting) %> |
+<%= link_to 'Back', postings_path %>

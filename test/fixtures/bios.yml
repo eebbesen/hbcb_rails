@@ -1,14 +1,20 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-bio_one:
+one:
   name: 'ADAMS, Edward (A)'
+  first_name: edward
+  middle_name: a
+  last_name: adams
   parish: 'Dartmouth, Devon'
   entered_service: '24 April 1869'
   dates: 
   filename: 'Adams, Edward A (fl. 1869-1890) JHB/jhb  November 1990  ;  May/99/mhd;  revised pc May/00'
 
-bio_two:
+two:
   name: MyText
+  first_name: MyText
+  middle_name: MyText
+  last_name: MyText
   parish: MyText
   entered_service: MyText
   dates: MyText
