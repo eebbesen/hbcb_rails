@@ -2,7 +2,7 @@ require 'test_helper'
 
 class BiosControllerTest < ActionController::TestCase
   setup do
-    @bio = bios(:bio_one)
+    @bio = bios(:one)
   end
 
   test "should get index" do
