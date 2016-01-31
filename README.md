@@ -2,9 +2,7 @@
 
 Cool data at https://www.gov.mb.ca/chc/archives/hbca/biographical/index.html, but it is stuck in pdfs.
 
-This program downloads the pdfs, and may someday automate their conversion to text documents.
-
-The final product will be data files/CSV/etc. that can be used as a more traditional, searchable database.
+This program downloads the pdfs, converts them to text documents and slurps the information into a searchable database.
 
 ## To run
 ### Download pdfs
@@ -32,3 +30,6 @@ To process all of the files matching test/fixtures/*.txt
 To process a single file
 
     bundle exec rake slurp[/Users/eebbesen/proj3/hbcb_rails/test/fixtures/adan_charles.txt]
+    
+## etc.
+The value of this code (to me) is a working datastore so development is proceeding 'fast and loose'.  One of the many compromises is manually cleaning up data that isn't properly parsed/converted by the default (already ugly, imho) regular expressions.
