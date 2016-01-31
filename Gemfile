@@ -32,6 +32,8 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+gem 'filterrific'
+
 gem 'minitest-ci', :git => 'git@github.com:circleci/minitest-ci.git'
 
 group :development, :test do

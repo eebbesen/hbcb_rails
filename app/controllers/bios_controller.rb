@@ -4,7 +4,14 @@ class BiosController < ApplicationController
   # GET /bios
   # GET /bios.json
   def index
-    @bios = Bio.all
+    @filterrific = initialize_filterrific(
+      Bio,
+      params[:filterrific],
+      select_options: {
+        sorted_by: Bio.options_for_sorted_by
+      }
+    ) or return
+    @bios = @filterrific.find
   end
 
   # GET /bios/1
