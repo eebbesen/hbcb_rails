@@ -6,7 +6,18 @@ class PostingsController < ApplicationController
   def index
     @bio = Bio.find(params[:bio_id]) if params[:bio_id]
     @title = title
-    @postings = @bio ? Posting.where(bio_id: @bio.id) : Posting.all
+
+    @filterrific = initialize_filterrific(
+      Posting,
+      params[:filterrific],
+      select_options: {
+        sorted_by: Posting.options_for_sorted_by
+      }
+    ) or return
+    @postings = @filterrific.find
+    if @bio
+      @postings = @postings.where(bio_id: @bio.id)
+    end
   end
 
   # GET /postings/1
@@ -64,8 +75,11 @@ class PostingsController < ApplicationController
   end
 
   def title
-    @bio.formatted_name if @bio
-    'Postings'
+    if @bio
+      @bio.formatted_name
+    else
+      'Postings' unless @bio
+    end
   end
 
   private

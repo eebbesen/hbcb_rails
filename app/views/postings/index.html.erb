@@ -1,7 +1,20 @@
 <p id="notice"><%= notice %></p>
 
 <h1><%= @title %></h1>
-
+<%= form_for_filterrific @filterrific do |f| %>
+  <div>
+    Record Search
+    <%= f.text_field(
+      :search_query,
+      class: 'filterrific-periodically-observed'
+    ) %>
+    <%= link_to(
+      'Reset filters',
+      reset_filterrific_url,
+    ) %>
+  </div>
+  <br>
+<% end %>
 <table>
   <thead>
     <tr>
@@ -28,7 +41,3 @@
     <% end %>
   </tbody>
 </table>
-
-<br>
-
-<%= link_to 'New Posting', new_posting_path %>

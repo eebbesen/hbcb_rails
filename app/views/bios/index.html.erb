@@ -9,21 +9,17 @@
       :search_query,
       class: 'filterrific-periodically-observed'
     ) %>
-  </div>
-  <div>
     <%= link_to(
       'Reset filters',
       reset_filterrific_url,
     ) %>
   </div>
 <% end %>
-
+<br>
 <table>
   <thead>
     <tr>
-      <th>First name</th>
-      <th>Middle name</th>
-      <th>Last name</th>
+      <th>Name</th>
       <th>Parish</th>
       <th>Entered service</th>
       <th>Dates</th>
@@ -35,20 +31,13 @@
   <tbody>
     <% @bios.each do |bio| %>
       <tr>
-        <td><%= link_to bio.first_name, postings_path({bio_id: bio.id}) %></td>
-        <td width="30"><%= bio.middle_name %></td>
-        <td><%= bio.last_name %></td>
+        <td><%= link_to bio.formatted_name, postings_path({bio_id: bio.id}) %></td>
         <td><%= bio.parish %></td>
         <td><%= bio.entered_service %></td>
         <td><%= bio.dates %></td>
         <td><%= bio.place_of_birth %></td>
-        <td><%= link_to 'Show', bio %></td>
         <td><%= link_to 'Edit', edit_bio_path(bio) %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
-
-<br>
-
-<%= link_to 'New Bio', new_bio_path %>
