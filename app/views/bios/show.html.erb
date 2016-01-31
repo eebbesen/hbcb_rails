@@ -40,5 +40,10 @@
   <%= @bio.place_of_birth %>
 </p>
 
+<p>
+  <strong>Notes:</strong>
+  <%= @bio.notes %>
+</p>
+
 <%= link_to 'Edit', edit_bio_path(@bio) %> |
 <%= link_to 'Back', bios_path %>
