@@ -2,6 +2,22 @@
 
 <h1>Listing Bios</h1>
 
+<%= form_for_filterrific @filterrific do |f| %>
+  <div>
+    Name Search
+    <%= f.text_field(
+      :search_query,
+      class: 'filterrific-periodically-observed'
+    ) %>
+  </div>
+  <div>
+    <%= link_to(
+      'Reset filters',
+      reset_filterrific_url,
+    ) %>
+  </div>
+<% end %>
+
 <table>
   <thead>
     <tr>
