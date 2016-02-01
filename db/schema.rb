@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160123225808) do
+ActiveRecord::Schema.define(version: 20160131221437) do
 
   create_table "bios", force: :cascade do |t|
     t.text     "name"
@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 20160123225808) do
     t.string   "first_name"
     t.string   "middle_name"
     t.string   "last_name"
+    t.string   "notes"
   end
 
   create_table "postings", force: :cascade do |t|

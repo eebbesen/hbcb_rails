@@ -33,6 +33,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # gem 'capistrano-rails', group: :development
 
 gem 'filterrific'
+gem 'yaml_db'
 
 gem 'minitest-ci', :git => 'git@github.com:circleci/minitest-ci.git'
 
