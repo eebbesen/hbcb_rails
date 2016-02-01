@@ -4,7 +4,20 @@ Cool data at https://www.gov.mb.ca/chc/archives/hbca/biographical/index.html, bu
 
 This program downloads the pdfs, converts them to text documents and slurps the information into a searchable database.
 
-## To run
+# Data userss
+I have scrubbed data manually and via regex so that it can be used as a database.
+## Setup application
+
+    bundle install                # initialize app
+    bundle exec rake db:migrate   # create database tables
+    bundle exec rake db:data:load # load data
+    bundle exec rails s           # run rails server
+
+Then use a web browser to visit http://localhost:3000
+
+
+# Developers
+## To run conversions
 ### Download pdfs
 
     gem install nokogiri
