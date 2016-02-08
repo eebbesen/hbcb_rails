@@ -23,6 +23,9 @@
       <th>Post</th>
       <th>District</th>
       <th>Ship</th>
+      <% unless @bio %>
+        <th>Name</th>
+      <% end %>
       <th colspan="3"></th>
     </tr>
   </thead>
@@ -35,6 +38,9 @@
         <td><%= posting.post %></td>
         <td><%= posting.district %></td>
         <td><%= posting.ship %></td>
+        <% unless @bio %>
+          <th><%= posting.bio.name if posting.bio %></th>
+        <% end %>
         <td><%= link_to 'Show', posting %></td>
         <td><%= link_to 'Edit', edit_posting_path(posting) %></td>
       </tr>
