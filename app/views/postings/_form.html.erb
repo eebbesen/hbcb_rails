@@ -10,7 +10,7 @@
       </ul>
     </div>
   <% end %>
-
+  <h1><%= @posting.bio.name  if @posting.bio %></h1>
   <div class="field">
     <%= f.label :years %><br>
     <%= f.text_field :years %>

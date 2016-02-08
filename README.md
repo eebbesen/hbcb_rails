@@ -15,6 +15,11 @@ I have scrubbed data manually and via regex so that it can be used as a database
 
 Then use a web browser to visit http://localhost:3000
 
+## Persist manual changes to data
+If you find data that needs to be formatted better/differently, do so in the application and save changes:
+
+    bundle exec rake db:data:dump
+
 
 # Developers
 ## To run conversions
