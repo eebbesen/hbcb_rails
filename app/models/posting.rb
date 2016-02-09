@@ -19,18 +19,19 @@ class Posting < ActiveRecord::Base
     # configure number of OR conditions for provision
     # of interpolation arguments. Adjust this if you
     # change the number of OR conditions.
-    num_or_conditions = 3
+    num_or_conditions = 4
     where(
       terms.map {
         or_clauses = [
           "LOWER(postings.position) LIKE ?",
           "LOWER(postings.post) LIKE ?",
-          "LOWER(postings.district) LIKE ?"
+          "LOWER(postings.district) LIKE ?",
+          "LOWER(bios.name) LIKE ?"
         ].join(' OR ')
         "(#{ or_clauses })"
       }.join(' AND '),
       *terms.map { |e| [e] * num_or_conditions }.flatten
-    )
+    ).joins(:bio).references(:bio)
   }
 
   scope :sorted_by, lambda { |sort_option|
