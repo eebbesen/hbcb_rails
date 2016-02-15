@@ -39,7 +39,7 @@
         <td><%= posting.district %></td>
         <td><%= posting.ship %></td>
         <% unless @bio %>
-          <th><%= posting.bio.name if posting.bio %></th>
+          <th><%= link_to(posting.bio.name, postings_path({bio_id: posting.bio.id})) if posting.bio %></th>
         <% end %>
         <td><%= link_to 'Show', posting %></td>
         <td><%= link_to 'Edit', edit_posting_path(posting) %></td>
@@ -47,3 +47,5 @@
     <% end %>
   </tbody>
 </table>
+
+<%= link_to 'All postings', postings_path %>
