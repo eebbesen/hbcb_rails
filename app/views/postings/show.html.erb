@@ -27,4 +27,5 @@
 </p>
 
 <%= link_to 'Edit', edit_posting_path(@posting) %> |
-<%= link_to 'Back', postings_path %>
+<%= link_to 'All postings', postings_path %> |
+<%= link_to "All postings for #{@posting.bio.name}", postings_path({bio_id: @posting.bio.id}) %>
